@@ -47,13 +47,13 @@ async def fetch_links(client: Client, message: Message, song_link):
             spotify= providers['spotify'].linksByPlatform['spotify']
             preview= await get_spotify_preview(spotify)
         except: preview= None
-        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.songLink + ')'
+        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.songLink + ')\n'
         if preview: r = f"[\u2061]({preview})" + r
     elif isinstance(result, AlbumResult):
         preview= None
         entity = result.album
         providers = result.albumsByProvider
-        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.albumLink + ')'	
+        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.albumLink + ')\n'	
     else:
         await reply.edit_text(URL_ERROR)
         return
@@ -61,23 +61,23 @@ async def fetch_links(client: Client, message: Message, song_link):
     op = []
     for provider in providers:
         if provider == 'youtube':
-            r += (" | [YouTube](" + providers['youtube'].linksByPlatform['youtube'] + ') | [YT Music](' +
-            providers['youtube'].linksByPlatform['youtubeMusic'] + ')')
+            r += ("\u25CF [YouTube](" + providers['youtube'].linksByPlatform['youtube'] + ') \u25CF [YT Music](' +
+            providers['youtube'].linksByPlatform['youtubeMusic'] + ') ')
             op.append("youtube")
             continue
         elif provider == 'itunes':
-            r += (" | [Apple Music](" + providers['itunes'].linksByPlatform['appleMusic'] + ')')
+            r += ("\u25CF [Apple Music](" + providers['itunes'].linksByPlatform['appleMusic'] + ') ')
             op.append("itunes")
             continue
         elif provider == 'amazon':
-            r += (' | [Amazon Music](' +
-            providers['amazon'].linksByPlatform['amazonMusic'] + ')')
+            r += ('\u25CF [Amazon Music](' +
+            providers['amazon'].linksByPlatform['amazonMusic'] + ') ')
             op.append("amazon")
             continue
         else:
-            r += ' | [' + (provider.title() + '](' + providers[provider].linksByPlatform[provider] + ')')
+            r += '\u25CF [' + (provider.title() + '](' + providers[provider].linksByPlatform[provider] + ') ')
             op.append(provider)
-
+    r += '\u25CF'       
     t = r
     t += "\n\n__Checking songwhip.com for additional links, please wait...__"
 
@@ -86,7 +86,7 @@ async def fetch_links(client: Client, message: Message, song_link):
 
     try: r = await songwhip(song_link, r, op)
     finally: 
-        if preview: await reply.edit_text(f"{r}\n\n<pre>♪ Preview</pre>") 
+        if preview: await reply.edit_text(f"{r}\n\n<pre>â™ª Preview</pre>") 
         else: await reply.edit_text(r, disable_web_page_preview=True)
 
     #if message.chat.type == enums.ChatType.PRIVATE:
@@ -101,63 +101,64 @@ async def songwhip(song_link, r, op):
             try:
                 x = response.json()
                 tmp = "https://songwhip.com/" + x.get("data").get("item").get("url")
-                r += f" | [Songwhip]({tmp})"
+                r += f"\n\n[Songwhip]({tmp})\n"
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("qobuz")[0].get("link")
-                r += f" | [Qobuz]({tmp})"
+                r += f"\u25CF [Qobuz]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("jioSaavn")[0].get("link")
-                r += f" | [JioSaavn]({tmp})"
+                r += f"\u25CF [JioSaavn]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("gaana")[0].get("link")
-                r += f" | [Gaana]({tmp})"
+                r += f"\u25CF [Gaana]({tmp}) "
             except: pass
 
             if 'spotify' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("spotify")[0].get("link")
-                    r += f" | [Spotify]({tmp})"
+                    r += f"\u25CF [Spotify]({tmp}) "
                 except: pass
             if 'deezer' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("deezer")[0].get("link")
-                    r += f" | [Deezer]({tmp})"
+                    r += f"\u25CF [Deezer]({tmp}) "
                 except: pass
             if 'tidal' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("tidal")[0].get("link")
-                    r += f" | [Tidal]({tmp})"
+                    r += f"\u25CF [Tidal]({tmp}) "
                 except: pass
             if 'amazon' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("amazonMusic")[0].get("link")
-                    r += f" | [Amazon Music]({tmp})"
+                    r += f"\u25CF [Amazon Music]({tmp}) "
                 except: pass
             if 'itunes' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("itunes")[0].get("link")
                     tmp = tmp.replace("{country}", "gb", 1)
-                    r += f" | [Apple Music]({tmp})"
+                    r += f"\u25CF [Apple Music]({tmp}) " 
                 except: pass
             if 'napster' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("napster")[0].get("link")
-                    r += f" | [Napster]({tmp})"
+                    r += f"\u25CF [Napster]({tmp}) "
                 except: pass
             if 'linemusic' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("lineMusic")[0].get("link")
-                    r += f" | [Line Music]({tmp})"
+                    r += f"\u25CF [Line Music]({tmp}) "
                 except: pass
             if 'youtube' not in op:
                 try:
                     tmp = x.get("data").get("item").get("links").get("youtube")[0].get("link")
                     tmp1 = x.get("data").get("item").get("links").get("youtubeMusic")[0].get("link")
-                    r += f" | [Youtube]({tmp}) | [Youtube Music]({tmp1})"
+                    r += f"\u25CF [Youtube]({tmp}) \u25CF [Youtube Music]({tmp1}) "
                 except: pass
+            r += '\u25CF'    
             return r
         else: return r
     
@@ -180,7 +181,7 @@ async def get_inline_result_link(client: Client, inline_query: InlineQuery, song
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("Open Bot", url="https://t.me/tgodeslibot")
+                            InlineKeyboardButton("Open Bot", url="https://t.me/odeslitgbot")
                         ]
                     ]
                 )
@@ -215,7 +216,7 @@ async def get_inline_result_link(client: Client, inline_query: InlineQuery, song
                 caption=r,
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton("🌐 Fetching links...", callback_data="LOADING_BUTTON")]
+                        [InlineKeyboardButton("ðŸŒ Fetching links...", callback_data="LOADING_BUTTON")]
                     ]
                 )
             )      
@@ -240,7 +241,7 @@ async def get_inline_result_query(client: Client, inline_query: InlineQuery):
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("Open Bot", url="https://t.me/tgodeslibot")
+                                InlineKeyboardButton("Open Bot", url="https://t.me/odeslitgbot")
                             ]
                         ]
                     )
@@ -272,7 +273,7 @@ async def get_inline_result_query(client: Client, inline_query: InlineQuery):
                 id=id,
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton("🌐 Fetching links...", callback_data="LOADING_BUTTON")]
+                        [InlineKeyboardButton("ðŸŒ Fetching links...", callback_data="LOADING_BUTTON")]
                     ]
                 )
             )        
@@ -296,7 +297,7 @@ async def get_inline_result_spotify(client: Client, inline_query: InlineQuery, q
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("Open Bot", url="https://t.me/tgodeslibot")
+                                InlineKeyboardButton("Open Bot", url="https://t.me/odeslitgbot")
                             ]
                         ]
                     )
@@ -324,7 +325,7 @@ async def get_inline_result_spotify(client: Client, inline_query: InlineQuery, q
             album_url = album.get("external_urls").get("spotify")
             release_date = album.get("release_date")
             caption= f"**{album_name}** by **{album_artists}**"
-            description= f"{str(release_date)} • {str(total_tracks)} Songs • {album_artists}"
+            description= f"{str(release_date)} â€¢ {str(total_tracks)} Songs â€¢ {album_artists}"
             await store_values(str(id), album_url)
             results.append(
                 InlineQueryResultPhoto(
@@ -336,7 +337,7 @@ async def get_inline_result_spotify(client: Client, inline_query: InlineQuery, q
                     id=id,
                     reply_markup=InlineKeyboardMarkup(
                         [
-                            [InlineKeyboardButton("🌐 Fetching links...", callback_data="LOADING_BUTTON")]
+                            [InlineKeyboardButton("ðŸŒ Fetching links...", callback_data="LOADING_BUTTON")]
                         ]
                     )
                 )        
@@ -359,7 +360,7 @@ async def get_inline_result_spotify(client: Client, inline_query: InlineQuery, q
             track_preview = track.get("preview_url")
             track_url = track.get("external_urls").get("spotify")
             release_date = track.get("album").get("release_date")
-            description= f"{track_artists} • {track_album_name} • {release_date}"
+            description= f"{track_artists} â€¢ {track_album_name} â€¢ {release_date}"
             caption= f"**{track_name}** by **{track_artists}**"
             await store_values(str(id), track_url)
             results.append(
@@ -372,7 +373,7 @@ async def get_inline_result_spotify(client: Client, inline_query: InlineQuery, q
                     id=id,
                     reply_markup=InlineKeyboardMarkup(
                         [
-                            [InlineKeyboardButton("🌐 Fetching links...", callback_data="LOADING_BUTTON")]
+                            [InlineKeyboardButton("ðŸŒ Fetching links...", callback_data="LOADING_BUTTON")]
                         ]
                     )
                 )        
@@ -398,7 +399,7 @@ async def chosen_result_handler(client, query, message_id):
         artist = entity.artistName
         thumb = entity.thumbnailUrl
         providers = result.songsByProvider
-        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.songLink + ')'
+        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.songLink + ')\n'
 		
     elif isinstance(result, AlbumResult):
         entity = result.album
@@ -406,28 +407,28 @@ async def chosen_result_handler(client, query, message_id):
         artist = entity.artistName
         thumb = entity.thumbnailUrl
         providers = result.albumsByProvider
-        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.albumLink + ')'
+        r = '**' + entity.title + "** by **" + entity.artistName + '** \n\n[Odesli](' + result.albumLink + ')\n'
         
     op = []
     for provider in providers:
         if provider == 'youtube':
-            r += (" | [YouTube](" + providers['youtube'].linksByPlatform['youtube'] + ') | [YT Music](' +
-            providers['youtube'].linksByPlatform['youtubeMusic'] + ')')
+            r += ("\u25CF [YouTube](" + providers['youtube'].linksByPlatform['youtube'] + ') \u25CF [YT Music](' +
+            providers['youtube'].linksByPlatform['youtubeMusic'] + ') ')
             op.append("youtube")
             continue
         if provider == 'itunes':
-            r += (" | [Apple Music](" + providers['itunes'].linksByPlatform['appleMusic'] + ')')
+            r += ("\u25CF [Apple Music](" + providers['itunes'].linksByPlatform['appleMusic'] + ') ')
             op.append("itunes")
             continue
         if provider == 'amazon':
-            r += (' | [Amazon Music](' +
-            providers['amazon'].linksByPlatform['amazonMusic'] + ')')
+            r += ('\u25CF [Amazon Music](' +
+            providers['amazon'].linksByPlatform['amazonMusic'] + ') ')
             op.append("amazon")
             continue	
         else:
-            r += ' | [' + (provider.title() + '](' + providers[provider].linksByPlatform[provider] + ')')
+            r += ' [' + (provider.title() + '](' + providers[provider].linksByPlatform[provider] + ') ')
             op.append(provider)
-    
+    r += "\u25CF"
     await client.edit_inline_text(message_id, r)
     try: 
         r = await songwhip(query, r, op)
@@ -450,53 +451,53 @@ async def songwhip_full(song_link):
             except: pass
             try:
                 tmp = "https://songwhip.com/" + x.get("data").get("item").get("url")
-                r += f"[Songwhip]({tmp})"
+                r += f"\n\n[Songwhip]({tmp})\n"
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("qobuz")[0].get("link")
-                r += f" | [Qobuz]({tmp})"
+                r += f"\u25CF [Qobuz]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("spotify")[0].get("link")
-                r += f" | [Spotify]({tmp})"
+                r += f"\u25CF [Spotify]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("deezer")[0].get("link")
-                r += f" | [Deezer]({tmp})"
+                r += f"\u25CF [Deezer]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("tidal")[0].get("link")
-                r += f" | [Tidal]({tmp})"
+                r += f"\u25CF [Tidal]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("amazonMusic")[0].get("link")
-                r += f" | [Amazon Music]({tmp})"
+                r += f"\u25CF [Amazon Music]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("itunes")[0].get("link")
                 tmp = tmp.replace("{country}", "gb", 1)
-                r += f" | [Apple Music]({tmp})"
+                r += f"\u25CF [Apple Music]({tmp}) " 
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("napster")[0].get("link")
-                r += f" | [Napster]({tmp})"
+                r += f"\u25CF [Napster]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("lineMusic")[0].get("link")
-                r += f" | [Line Music]({tmp})"
+                r += f"\u25CF [Line Music]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("youtube")[0].get("link")
                 tmp1 = x.get("data").get("item").get("links").get("youtubeMusic")[0].get("link")
-                r += f" | [Youtube]({tmp}) | [Youtube Music]({tmp1})"
+                r += f"\u25CF [Youtube]({tmp}) \u25CF [Youtube Music]({tmp1}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("jioSaavn")[0].get("link")
-                r += f" | [JioSaavn]({tmp})"
+                r += f"\u25CF [JioSaavn]({tmp}) "
             except: pass
             try:
                 tmp = x.get("data").get("item").get("links").get("gaana")[0].get("link")
-                r += f" | [Gaana]({tmp})"
+                r += f"\u25CF [Gaana]({tmp}) "
             except: pass
- 
+            r += '\u25CF'
             return r
